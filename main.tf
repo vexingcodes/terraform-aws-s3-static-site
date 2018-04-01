@@ -99,7 +99,7 @@ resource "aws_s3_bucket" "main" {
   policy = "${data.aws_iam_policy_document.bucket.json}"
   website = {
     index_document = "index.html"
-    error_document = "error.html"
+    error_document = "404.html"
   }
 }
 
