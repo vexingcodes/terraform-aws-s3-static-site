@@ -89,7 +89,7 @@ data "aws_iam_policy_document" "deploy" {
     ]
 
     resources = [
-      "${element(aws_cloudfront_distribution.cdn.*.arn, 0)}"
+      "*" # A specific resource cannot be specified here, unfortunately.
     ]
   }
 }
