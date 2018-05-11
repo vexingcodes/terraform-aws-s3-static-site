@@ -136,7 +136,7 @@ resource "aws_cloudfront_distribution" "cdn" {
     restrictions {
       geo_restriction {
         restriction_type = "${lookup(var.cdn_settings, "restriction_type", "none")}"
-        locations        = "${lookup(var.cdn_settings, "locations")}"
+        locations        = ["${var.countries}"]
       }
     }
 
