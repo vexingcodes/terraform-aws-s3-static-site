@@ -49,7 +49,8 @@ data "aws_route53_zone" "zone" {
 }
 
 locals {
-    all_domains      = "${split(",", join(",", concat(data.template_file.www_first.*.rendered, data.template_file.root_first.*.rendered)))}"
+    all_domains      = "${split(",", join(",", concat(data.template_file.www_first.*.rendered, 
+                                                      data.template_file.root_first.*.rendered)))}"
     primary_domain   = "${local.all_domains[0]}"
     www_domains      = "${join(",", formatlist("www.%s", var.domains))}"
     redirect_domains = "${slice(local.all_domains, 1, length(local.all_domains))}"
@@ -59,7 +60,8 @@ locals {
     zone_domain_name = "${split(",", replace(join(",", local.all_domains), "/(?i)www\\./", ""))}"
 
     # Ditto here.  The order shouldn't change.
-    endpoints = ["${split(",", format("%s,%s", aws_s3_bucket.main.website_endpoint, join(",", aws_s3_bucket.redirect.*.website_endpoint)))}"]
+    endpoints = ["${split(",", format("%s,%s", aws_s3_bucket.main.website_endpoint, 
+                                               join(",", aws_s3_bucket.redirect.*.website_endpoint)))}"]
 }
 
 resource "aws_s3_bucket" "main" {
