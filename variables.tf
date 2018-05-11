@@ -9,5 +9,18 @@ variable "secret" {
 }
 
 variable "www_is_main" {
+  type    = "string"
   default = false
+}
+
+variable "enable_iam_user" {
+  type    = "string"
+  default = true
+}
+
+variable "cdn_settings" {
+  type = "map"
+  description = "CloudFront CDN settings"
+  default = {
+  }
 }
