@@ -3,17 +3,8 @@ provider "aws" {
     region  = "${var.region}"
 }
 
-terraform {
-    backend "s3" {
-      bucket  = "terraform-remote-state-bucket-s3"
-      key     = "static-site-test/terraform.tfstate"
-      region  = "eu-west-2"
-      encrypt = true
-    }
-}
-
 module "s3-static-site" {
-    source          = "git::https://github.com/tiguard/terraform-aws-s3-static-site.git?ref=development"
+    source          = "../.."
     countries       = ["RU", "CN"]
     enable_iam_user = false
     secret          = "ghhyryr678rhbjoh"
