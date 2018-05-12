@@ -1,5 +1,7 @@
 # terraform-aws-s3-static-site
 
+[![CircleCI](https://circleci.com/gh/tiguard/terraform-aws-s3-static-site.svg?style=shield)](https://circleci.com/gh/tiguard/terraform-aws-s3-static-site)
+
 Creates a static website on a domain hosted on S3 and delivered by CloudFront over HTTPS with Route53 managing DNS.
 
 ## Features
