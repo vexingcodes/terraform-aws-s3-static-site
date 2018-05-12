@@ -19,3 +19,12 @@ jobs:
       - run:
           name: Run terraform plan
           command: terraform plan -input=false  test/integration
+workflows:
+  version: 2
+  test-dev:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only:
+                - development
