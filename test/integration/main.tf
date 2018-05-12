@@ -10,6 +10,11 @@ module "s3-static-site" {
     secret          = "ghhyryr678rhbjoh"
     www_is_main     = true
 
+    domains = [
+        "immel.co.uk",
+        "immel.io"
+    ]
+
     cdn_settings = {
         price_class              = "PriceClass_100"
         restriction_type         = "blacklist"
