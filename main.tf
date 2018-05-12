@@ -145,7 +145,7 @@ resource "aws_cloudfront_distribution" "cdn" {
     viewer_certificate {
       acm_certificate_arn      = "${aws_acm_certificate_validation.cert.certificate_arn}"
       ssl_support_method       = "sni-only"
-      minimum_protocol_version = "TLSv1.2_2018"
+      minimum_protocol_version = "${lookup(var.cdn_settings, "minimum_protocol_version", "TLSv1_2016")}"
     }
 
     default_cache_behavior {
@@ -155,8 +155,8 @@ resource "aws_cloudfront_distribution" "cdn" {
       compress               = "true"
       viewer_protocol_policy = "redirect-to-https"
       min_ttl                = "${lookup(var.cdn_settings, "min_ttl", "0")}"
-      default_ttl            = "${lookup(var.cdn_settings, "default_ttl", "3600")}"
-      max_ttl                = "${lookup(var.cdn_settings, "max_ttl", "86400")}"
+      default_ttl            = "${lookup(var.cdn_settings, "default_ttl", "86400")}"
+      max_ttl                = "${lookup(var.cdn_settings, "max_ttl", "31536000")}"
 
       forwarded_values {
         query_string = false
