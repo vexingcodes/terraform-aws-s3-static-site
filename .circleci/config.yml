@@ -11,8 +11,8 @@ jobs:
             wget https://github.com/wata727/tflint/releases/download/v0.5.4/tflint_linux_amd64.zip
             unzip tflint_linux_amd64.zip
       - run:
-          name: Run terraform init
-          command: terraform init -input=false
+          name: Run terraform init 
+          command: terraform init -input=false test/integration
       - run:
           name: Lint the terraform code
           command: ./tflint --deep --aws-region eu-west-2
