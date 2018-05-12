@@ -13,7 +13,7 @@ terraform {
 }
 
 module "s3-static-site" {
-    source          = "github.com/tiguard/terraform-aws-s3-static-site//tree//development"
+    source          = "git::https://github.com/tiguard/terraform-aws-s3-static-site.git?ref=development"
     countries       = ["RU", "CN"]
     enable_iam_user = false
     secret          = "ghhyryr678rhbjoh"
