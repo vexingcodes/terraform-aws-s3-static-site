@@ -21,11 +21,11 @@ Creates a static website on a domain hosted on S3 and delivered by CloudFront ov
 
 ### Primary domain is apex
 
-<img src="blob/development/images/apex_root.png" width="400">
+<img src="images/apex_root.PNG" width="400">
 
 ### Primary domain is www
 
-<img src="blob/development/images/www_root.png" width="400">
+<img src="images/www_root.PNG" width="400">
 
 ## Usage
 
