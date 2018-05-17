@@ -91,12 +91,12 @@ resource "aws_acm_certificate" "cert" {
 }
 
 resource "aws_route53_record" "cert" {
-  count   = "${length(local.all_domains)}"
-  name    = "${lookup(aws_acm_certificate.cert.domain_validation_options[count.index], "resource_record_name")}"
-  type    = "${lookup(aws_acm_certificate.cert.domain_validation_options[count.index], "resource_record_type")}"
-  records = ["${lookup(aws_acm_certificate.cert.domain_validation_options[count.index], "resource_record_value")}"]
-  zone_id = "${element(data.aws_route53_zone.zone.*.zone_id, count.index)}"
-  ttl     = 300
+    count   = "${length(local.all_domains)}"
+    name    = "${lookup(aws_acm_certificate.cert.domain_validation_options[count.index], "resource_record_name")}"
+    type    = "${lookup(aws_acm_certificate.cert.domain_validation_options[count.index], "resource_record_type")}"
+    records = ["${lookup(aws_acm_certificate.cert.domain_validation_options[count.index], "resource_record_value")}"]
+    zone_id = "${element(data.aws_route53_zone.zone.*.zone_id, count.index)}"
+    ttl     = 300
 }
 
 resource "aws_acm_certificate_validation" "cert" {

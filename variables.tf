@@ -1,6 +1,6 @@
 variable "domains" {
     type        = "list"
-    description = "A list of domains to be built into a static website."
+    description = "A list of naked domains to be built into a static website."
     default     = []
 }
 
