@@ -30,6 +30,15 @@ Creates a static website on a domain hosted on S3 and delivered by CloudFront ov
 ## Usage
 
 ```hcl
+provider "template" {
+    version = "~> 1.0"
+}
+
+provider "aws" {
+    alias  = "use1"
+    region = "us-east-1"
+}
+
 module "s3_static_site" {
     source    = "vexingcodes/s3-static-site/aws"
     countries = ["RU", "CN"]
@@ -47,6 +56,8 @@ module "s3_static_site" {
         minimum_protocol_version = "TLSv1.2_2018"
     }
 ```
+
+The module requires the `template` provider and an alias for the `aws` provider called `use1`.
 
 ## Inputs
 

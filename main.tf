@@ -1,12 +1,3 @@
-provider "template" {
-    version = "~> 1.0"
-}
-
-provider "aws" {
-    alias  = "use1"
-    region = "us-east-1"
-}
-
 # Templates can only handle strings, so convert to a string and join
 data "template_file" "www_first" {
     count    = "${var.www_is_main}"

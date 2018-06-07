@@ -3,6 +3,15 @@ provider "aws" {
     region  = "${var.region}"
 }
 
+provider "template" {
+    version = "~> 1.0"
+}
+
+provider "aws" {
+    alias  = "use1"
+    region = "us-east-1"
+}
+
 module "s3-static-site" {
     source          = "../.."
     countries       = ["RU", "CN"]
