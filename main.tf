@@ -101,13 +101,12 @@ resource "aws_acm_certificate_validation" "cert" {
 }
 
 resource "aws_cloudfront_distribution" "cdn" {
-    count               = "${length(local.all_domains)}"
-    aliases             = ["${local.all_domains[count.index]}"]
-    comment             = "CloudFront CDN for ${local.all_domains[count.index]}"
-    default_root_object = "index.html"
-    enabled             = true
-    is_ipv6_enabled     = true
-    price_class         = "${lookup(var.cdn_settings, "price_class", "PriceClass_All")}"
+    count           = "${length(local.all_domains)}"
+    aliases         = ["${local.all_domains[count.index]}"]
+    comment         = "CloudFront CDN for ${local.all_domains[count.index]}"
+    enabled         = true
+    is_ipv6_enabled = true
+    price_class     = "${lookup(var.cdn_settings, "price_class", "PriceClass_All")}"
 
     origin {
       domain_name = "${local.endpoints[count.index]}"
