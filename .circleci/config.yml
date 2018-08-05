@@ -1,0 +1,30 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: hashicorp/terraform:light
+    steps:
+      - checkout
+      - run:
+          name: Download and install tflint
+          command: |
+            wget https://github.com/wata727/tflint/releases/download/v0.5.4/tflint_linux_amd64.zip
+            unzip tflint_linux_amd64.zip
+      - run:
+          name: Run terraform init 
+          command: terraform init -input=false test/integration
+      - run:
+          name: Lint the terraform code
+          command: ./tflint --deep --aws-region eu-west-2
+      - run:
+          name: Run terraform plan
+          command: terraform plan -input=false  test/integration
+workflows:
+  version: 2
+  test-dev:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only:
+                - development
