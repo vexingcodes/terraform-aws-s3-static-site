@@ -14,15 +14,15 @@ locals {
   # one, but for now I only care about having one subdomain redirect to the
   # apex.
   domains = [
-    "${var.domain}",
-    "${local.www_domain}"
+    var.domain,
+    local.www_domain
   ]
 
   # This is a parallel array with local.domains, keep them in the
   # same order.
   endpoints = [
-    "${aws_s3_bucket.main.website_endpoint}",
-    "${aws_s3_bucket.redirect.website_endpoint}"
+    aws_s3_bucket.main.website_endpoint,
+    aws_s3_bucket.redirect.website_endpoint
   ]
 }
 
@@ -48,7 +48,7 @@ data "aws_iam_policy_document" "bucket" {
     condition {
       test = "StringEquals"
       variable = "aws:UserAgent"
-      values = ["${var.secret}"]
+      values = [var.secret]
     }
   }
 }
@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "deploy" {
     ]
 
     resources = [
-      "${aws_s3_bucket.main.arn}"
+      aws_s3_bucket.main.arn
     ]
   }
 
@@ -106,7 +106,7 @@ resource "aws_s3_bucket" "main" {
 resource "aws_s3_bucket" "redirect" {
   bucket = "${local.www_domain}"
   website = {
-    redirect_all_requests_to = "${aws_s3_bucket.main.id}"
+    redirect_all_requests_to = aws_s3_bucket.main.id
   }
 }
 
@@ -116,30 +116,28 @@ resource "aws_route53_zone" "zone" {
 
 resource "aws_acm_certificate" "cert" {
   domain_name = "${var.domain}"
-  subject_alternative_names = ["${local.www_domain}"]
+  subject_alternative_names = [local.www_domain]
   validation_method = "DNS"
   provider = "aws.us-east-1" # CloudFront requires certificates in this region.
 }
 
 resource "aws_route53_record" "cert" {
   count = "${length(local.domains)}"
-  name =
-    "${lookup(aws_acm_certificate.cert.domain_validation_options[count.index],
-              "resource_record_name")}"
-  type =
-    "${lookup(aws_acm_certificate.cert.domain_validation_options[count.index],
-              "resource_record_type")}"
+  name = lookup(aws_acm_certificate.cert.domain_validation_options[count.index],
+              "resource_record_name")
+  type = lookup(aws_acm_certificate.cert.domain_validation_options[count.index],
+              "resource_record_type")
   records = [
-    "${lookup(aws_acm_certificate.cert.domain_validation_options[count.index],
-     "resource_record_value")}"
+    lookup(aws_acm_certificate.cert.domain_validation_options[count.index],
+     "resource_record_value")
   ]
-  zone_id = "${aws_route53_zone.zone.id}"
+  zone_id = aws_route53_zone.zone.id
   ttl = 300
 }
 
 resource "aws_acm_certificate_validation" "cert" {
-  certificate_arn = "${aws_acm_certificate.cert.arn}"
-  validation_record_fqdns = ["${aws_route53_record.cert.*.fqdn}"]
+  certificate_arn = aws_acm_certificate.cert.arn
+  validation_record_fqdns = [aws_route53_record.cert.*.fqdn]
   provider = "aws.us-east-1" # CloudFront requires certificates in this region.
   timeouts {
     create = "2h"
@@ -147,14 +145,14 @@ resource "aws_acm_certificate_validation" "cert" {
 }
 
 resource "aws_cloudfront_distribution" "cdn" {
-  count = "${length(local.domains)}"
+  count = length(local.domains)
   enabled = true
   http_version = "http2"
-  aliases = ["${element(local.domains, count.index)}"]
+  aliases = [element(local.domains, count.index)]
   is_ipv6_enabled = true
 
   origin {
-    domain_name = "${element(local.endpoints, count.index)}"
+    domain_name = element(local.endpoints, count.index)
     origin_id = "S3-${element(local.domains, count.index)}"
 
     custom_origin_config {
@@ -177,8 +175,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   }
 
   viewer_certificate {
-    acm_certificate_arn =
-      "${aws_acm_certificate_validation.cert.certificate_arn}"
+    acm_certificate_arn = aws_acm_certificate_validation.cert.certificate_arn
     ssl_support_method = "sni-only"
     minimum_protocol_version = "TLSv1"
   }
@@ -204,16 +201,16 @@ resource "aws_cloudfront_distribution" "cdn" {
 }
 
 resource "aws_route53_record" "A" {
-  count = "${length(local.domains)}"
-  zone_id = "${aws_route53_zone.zone.zone_id}"
-  name = "${element(local.domains, count.index)}"
+  count = length(local.domains)
+  zone_id = aws_route53_zone.zone.zone_id
+  name = element(local.domains, count.index)
   type = "A"
 
   alias {
-    name = "${element(aws_cloudfront_distribution.cdn.*.domain_name,
-                      count.index)}"
-    zone_id = "${element(aws_cloudfront_distribution.cdn.*.hosted_zone_id,
-                         count.index)}"
+    name = element(aws_cloudfront_distribution.cdn.*.domain_name,
+                      count.index)
+    zone_id = element(aws_cloudfront_distribution.cdn.*.hosted_zone_id,
+                         count.index)
     evaluate_target_health = false
   }
 }
@@ -224,11 +221,11 @@ resource "aws_iam_user" "deploy" {
 }
 
 resource "aws_iam_access_key" "deploy" {
-  user = "${aws_iam_user.deploy.name}"
+  user = aws_iam_user.deploy.name
 }
 
 resource "aws_iam_user_policy" "deploy" {
   name = "deploy"
-  user = "${aws_iam_user.deploy.name}"
-  policy = "${data.aws_iam_policy_document.deploy.json}"
+  user = aws_iam_user.deploy.name
+  policy = data.aws_iam_policy_document.deploy.json
 }
